@@ -65,7 +65,7 @@ app.add_middleware(
 )
 
 
-for router in [auth.router]:
+for router in [auth.router, teachers.router, chat.router]:
     app.include_router(router)
 
 if __name__ == "__main__":
