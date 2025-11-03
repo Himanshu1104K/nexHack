@@ -9,6 +9,8 @@ async def teacher_node(state: ChatState):
     """
     Teacher node for the chat bot.
     """
+
+    return Command(goto="response_node", update=state)
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0.1,

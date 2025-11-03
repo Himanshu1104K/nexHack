@@ -10,6 +10,10 @@ async def user_node(state: ChatState):
     """
     User node for the chat bot.
     """
+
+    return Command(goto="response_node", update=state)
+
+    
     if response.get("lecture_id"):
         return Command(goto="course_scrapper_node", update=state)
 

@@ -12,7 +12,7 @@ async def response_node(state: ChatState):
     Response node for the chat bot.
     """
     llm = ChatOpenAI(
-        model="gpt-4o-mini",
+        model="gpt-4o",
         temperature=0.7,
         streaming=True,
     )
