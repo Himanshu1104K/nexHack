@@ -11,11 +11,13 @@ load_dotenv()
 logger = get_logger(__name__)
 db_user = None
 db_teacher = None
+teacher_store = None
+user_store = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global db_user, db_teacher
+    global db_user, db_teacher, teacher_store, user_store
 
     try:
         try:
@@ -28,6 +30,9 @@ async def lifespan(app: FastAPI):
         db = firestore.client()
         db_user = db.collection(USER_DATABASE_NAME)
         db_teacher = db.collection(TEACHER_DATABASE_NAME)
+
+        teacher_store = await setup_teacher_store()
+        user_store = await setup_user_store()
 
         yield
     except Exception as e:
