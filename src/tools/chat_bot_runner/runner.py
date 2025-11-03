@@ -29,7 +29,7 @@ async def run_graph(user_input: str, user_id: str):
             event_type = event.get("event")
             if (
                 event_type == "on_chat_model_stream"
-                and event.get("metadata").get("langgraph_node") == "response"
+                and event.get("metadata").get("langgraph_node") == "response_node"
             ):
                 json_data = json.dumps(
                     {

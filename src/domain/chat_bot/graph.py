@@ -6,8 +6,8 @@ from src.models.chat.chatstate import ChatState
 async def get_chat_graph():
     graph = StateGraph(ChatState)
 
-    graph.add_node("response", response)
+    graph.add_node("response_node", response)
 
-    graph.add_edge(START, "response")
+    graph.add_edge(START, "response_node")
 
     return graph
