@@ -30,4 +30,4 @@ async def response(state: ChatState):
         {"user_input": state.user_input},
     )
     state.response = response
-    return Command(goto=END, state=state)
+    return Command(goto=END, update=state)

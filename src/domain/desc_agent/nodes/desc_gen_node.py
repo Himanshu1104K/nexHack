@@ -37,4 +37,4 @@ async def desc_gen_node(state: DESCSTATE):
         {"yt_desc": state.yt_desc},
     )
     state.yt_desc = response
-    return Command(goto=END, state=state)
+    return Command(goto=END, update=state)

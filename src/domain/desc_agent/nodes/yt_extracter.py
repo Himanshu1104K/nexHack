@@ -10,4 +10,4 @@ async def yt_extracter(state: DESCSTATE):
 
     state.yt_desc = await get_yt_description(state.yt_link)
 
-    return Command(goto="desc_gen_node", state=state)
+    return Command(goto="desc_gen_node", update=state)

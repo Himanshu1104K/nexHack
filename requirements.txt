@@ -18,3 +18,7 @@ python-jose==3.5.0
 firebase-admin==7.1.0
 qdrant-client==1.15.1
 langchain-qdrant==0.2.1
+google-api-python-client==2.169.0
+google-auth-httplib2==0.2.0
+google-auth-oauthlib==1.2.2
+pytz==2025.2
