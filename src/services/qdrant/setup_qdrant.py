@@ -9,6 +9,7 @@ from src.core.configs import (
     QDRANT_API_KEY,
     TEACHER_COLLECTION_NAME,
     USER_COLLECTION_NAME,
+    LECTURE_COLLECTION_NAME,
 )
 
 
@@ -50,6 +51,23 @@ async def setup_user_store():
     embeddings = OpenAIEmbeddings()
     vectorstore = QdrantVectorStore(
         client=client, collection_name=USER_COLLECTION_NAME, embedding=embeddings
+    )
+
+    return vectorstore
+
+async def setup_lecture_store():
+    """Initialize and return the lecture vector store"""
+    # Create collection if it doesn't exist
+    if not client.collection_exists(LECTURE_COLLECTION_NAME):
+        client.create_collection(
+            collection_name=LECTURE_COLLECTION_NAME,
+            vectors_config=VectorParams(size=1536, distance=Distance.COSINE),
+        )
+
+    # Create vector store
+    embeddings = OpenAIEmbeddings()
+    vectorstore = QdrantVectorStore(
+        client=client, collection_name=LECTURE_COLLECTION_NAME, embedding=embeddings
     )
 
     return vectorstore
