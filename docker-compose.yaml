@@ -1,11 +1,9 @@
-version: "3"
-
 services:
   backend:
     container_name: nexhack-backend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: DockerFile
     ports:
       - "8000:8000"
     depends_on:
