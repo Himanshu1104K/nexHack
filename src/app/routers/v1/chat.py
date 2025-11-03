@@ -17,11 +17,15 @@ async def chat(
     token_data: dict = Depends(verify_token),
 ):
     """Chat with the chat bot"""
+    user_id = token_data.get("sub")
+    user_type = token_data.get("user_type")
     try:
         return StreamingResponse(
             run_graph(
                 user_id=user_id,
-                user_input=user_input,
+                query=query,
+                lecture_id=lecture_id,
+                user_type=user_type,
             ),
             media_type="text/event-stream",
             headers={
