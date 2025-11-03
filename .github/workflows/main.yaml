@@ -14,14 +14,15 @@ jobs:
 
       - name: Code-Checkout
         uses: actions/checkout@v4
+        
+      - name: Remove Docker Container -
+        working-directory: .
+        run: docker compose down || true
 
       - name: Build Docker
         working-directory: .
         run: docker compose build
 
-      - name: Remove Docker Container -
-        working-directory: .
-        run: docker compose down || true
 
       - name: Docker Run
         working-directory: .
