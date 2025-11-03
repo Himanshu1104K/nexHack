@@ -4,7 +4,7 @@ from firebase_admin import auth
 from src.core.configs import (
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
 )
-from src import get_logger
+from src.core.utility.logging_utils import get_logger
 from src.models.routes_models.auth_models import AuthRequest, AuthResponse
 from src.services.auth.create_jwt import create_jwt_token
 
