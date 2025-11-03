@@ -3,6 +3,7 @@ from src.core.configs import *
 from src.core.utility.logging_utils import get_logger
 from src.services.qdrant.setup_qdrant import setup_teacher_store, setup_user_store
 from src.domain.chat_bot.graph import get_chat_graph
+from src.domain.desc_agent.graph import get_desc_graph
 
 __all__ = [
     "auth",
@@ -13,4 +14,5 @@ __all__ = [
     "setup_teacher_store",
     "setup_user_store",
     "get_chat_graph",
+    "get_desc_graph",
 ]

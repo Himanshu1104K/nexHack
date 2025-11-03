@@ -1,11 +1,6 @@
-from typing import Annotated, Optional, TypedDict, Dict, List, Any
-
-
-def get_last_value(old_value, new_value):
-    """Get the last value"""
-    return new_value
+from typing import Annotated, TypedDict
 
 
 class ChatState(TypedDict):
-    user_input: str
-    response: str
+    user_input: str = Annotated[str, "User input"]
+    response: str = Annotated[str, "Response"]
