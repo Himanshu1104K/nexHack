@@ -6,9 +6,13 @@ services:
       dockerfile: DockerFile
     ports:
       - "8000:8000"
+    environment:
+    - CREDENTIALS=${CREDENTIALS}
+    - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+    - USER_DATABASE_NAME=users
+    - TEACHER_DATABASE_NAME=teachers
     depends_on:
       - redis
-
   redis:
     image: redis
     container_name: redis-server

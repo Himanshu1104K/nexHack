@@ -26,6 +26,11 @@ jobs:
       - name: Docker Run
         working-directory: .
         run: docker compose up -d
+        env:
+          CREDENTIALS: ${{ secrets.CREDENTIALS }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          USER_DATABASE_NAME: users
+          TEACHER_DATABASE_NAME: teachers
 
       - name: Docker Clean
         run: docker system prune -af
