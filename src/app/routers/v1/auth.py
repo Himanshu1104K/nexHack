@@ -47,8 +47,7 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_user:
-                user_data = cast(
-                    User,
+                user_data = (
                     {
                         "user_id": user_id,
                         "user_email": user_email,
@@ -84,8 +83,7 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_teacher:
-                teacher_data = cast(
-                    Teacher,
+                teacher_data = (
                     {
                         "user_id": user_id,
                         "user_email": user_email,
