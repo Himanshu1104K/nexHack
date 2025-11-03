@@ -1,4 +1,5 @@
 import os
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,6 +10,6 @@ JWT_ALGORITHM = "HS256"
 JWT_ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60 * 30  # 30 days
 
 # Firebase credentials
-CREDENTIALS = os.getenv("CREDENTIALS")
+CREDENTIALS = json.loads(os.getenv("CREDENTIALS"))
 USER_DATABASE_NAME = os.getenv("USER_DATABASE_NAME")
 TEACHER_DATABASE_NAME = os.getenv("TEACHER_DATABASE_NAME")
