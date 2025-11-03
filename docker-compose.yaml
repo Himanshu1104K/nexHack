@@ -7,10 +7,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-    - CREDENTIALS=${CREDENTIALS}
-    - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-    - USER_DATABASE_NAME=users
-    - TEACHER_DATABASE_NAME=teachers
+      - CREDENTIALS=${CREDENTIALS}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - USER_DATABASE_NAME=users
+      - TEACHER_DATABASE_NAME=teachers
+      - QDRANT_HOST=${QDRANT_HOST}
+      - QDRANT_API_KEY=${QDRANT_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - redis
   redis:
