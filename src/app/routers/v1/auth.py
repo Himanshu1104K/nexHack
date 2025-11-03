@@ -47,17 +47,15 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_user:
-                user_data = (
-                    {
-                        "user_id": user_id,
-                        "user_email": user_email,
-                        "user_name": user_record.display_name or "Apple User",
-                        "fcm_tokens": fcm_tokens,
-                        "timezone": request.device_data.timezone or "Asia/Kolkata",
-                        "profile_url": user_record.photo_url
-                        or "https://avatar.iran.liara.run/public",
-                    },
-                )
+                user_data = {
+                    "user_id": user_id,
+                    "user_email": user_email,
+                    "user_name": user_record.display_name or "Apple User",
+                    "fcm_tokens": fcm_tokens,
+                    "timezone": request.device_data.timezone or "Asia/Kolkata",
+                    "profile_url": user_record.photo_url
+                    or "https://avatar.iran.liara.run/public",
+                }
 
                 user_doc_ref.set(user_data)
 
@@ -83,19 +81,17 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_teacher:
-                teacher_data = (
-                    {
-                        "user_id": user_id,
-                        "user_email": user_email,
-                        "user_name": user_record.display_name or "Apple User",
-                        "fcm_tokens": fcm_tokens,
-                        "timezone": request.device_data.timezone or "Asia/Kolkata",
-                        "profile_url": user_record.photo_url
-                        or "https://avatar.iran.liara.run/public",
-                        "access_token": "",
-                        "refresh_token": "",
-                    },
-                )
+                teacher_data = {
+                    "user_id": user_id,
+                    "user_email": user_email,
+                    "user_name": user_record.display_name or "Apple User",
+                    "fcm_tokens": fcm_tokens,
+                    "timezone": request.device_data.timezone or "Asia/Kolkata",
+                    "profile_url": user_record.photo_url
+                    or "https://avatar.iran.liara.run/public",
+                    "access_token": "",
+                    "refresh_token": "",
+                }
 
                 teacher_doc_ref.set(teacher_data)
 
