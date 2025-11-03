@@ -11,14 +11,16 @@ from datetime import datetime
 class CourseCollection(BaseModel):
     """Course collection schema for Qdrant."""
 
-    _id: str = Field(..., description="Course ID")
+    _id: Optional[str] = Field(..., description="Course ID")
     title: str = Field(..., description="Course title")
     description: str = Field(..., description="Course description")
     teacher_id: str = Field(..., description="Teacher ID")
-    instructor: Instructor = Field(..., description="Instructor")
+    instructor: Optional[Instructor] = Field(None, description="Instructor")
     thumbnail: Optional[str] = Field(None, description="Thumbnail URL")
-    total_lectures: int = Field(..., description="Total lectures")
-    total_duration: int = Field(..., description="Total duration in seconds")
-    enrolled_users: List[EnrolledUser] = Field(..., description="Enrolled users")
+    total_lectures: Optional[int] = Field(None, description="Total lectures")
+    total_duration: Optional[int] = Field(None, description="Total duration in seconds")
+    enrolled_users: Optional[List[EnrolledUser]] = Field(
+        None, description="Enrolled users"
+    )
     created_at: datetime = Field(..., description="Created at")
-    updated_at: datetime = Field(..., description="Updated at")
+    updated_at: Optional[datetime] = Field(None, description="Updated at")
