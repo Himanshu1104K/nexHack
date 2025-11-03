@@ -7,9 +7,6 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
-# Update package lists and install all dependencies in fewer layers for better caching
-RUN apt-get update && apt-get install -y --no-install-recommends
-
 # Copy requirements first for better caching
 COPY requirements.txt .
 
