@@ -17,4 +17,4 @@ python-multipart>=0.0.20
 python-jose==3.5.0
 firebase-admin==7.1.0
 qdrant-client==1.15.1
-langchain-qdrant==1.1.0
+langchain-qdrant==0.2.1
