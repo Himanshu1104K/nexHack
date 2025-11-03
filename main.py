@@ -53,15 +53,17 @@ app = FastAPI(
     description="API for NexHack which acts as a mediator",
     version="1.0.0",
     lifespan=lifespan,
-    middleware=[
-        CORSMiddleware(
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
-    ],
 )
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Content-Type"],
+)
+
 
 for router in [auth.router]:
     app.include_router(router)

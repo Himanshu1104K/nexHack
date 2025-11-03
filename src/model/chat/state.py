@@ -13,3 +13,4 @@ class ChatState(TypedDict):
     search_results: Optional[list[dict]] = Annotated[
         Optional[list[dict]], "Search results"
     ]
+    course_data: Optional[dict] = Annotated[Optional[dict], "Course data"]
