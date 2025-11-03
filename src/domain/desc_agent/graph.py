@@ -15,4 +15,5 @@ async def get_desc_graph():
 
     graph.add_edge(START, "yt_extracter")
 
-    return graph
+    compiled_graph = graph.compile()
+    return compiled_graph
