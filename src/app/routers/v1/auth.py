@@ -1,3 +1,4 @@
+from ctypes import cast
 from datetime import datetime, timedelta
 from fastapi import APIRouter, HTTPException
 from firebase_admin import auth
@@ -5,8 +6,9 @@ from src.core.configs import (
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 from src.core.utility.logging_utils import get_logger
-from src.models.routes_models.auth_models import AuthRequest, AuthResponse
+from src.model.routes.auth_models import AuthRequest, AuthResponse
 from src.services.auth.create_jwt import create_jwt_token
+from src.model.firestore.state import User, Teacher
 
 logger = get_logger(__name__)
 
@@ -47,13 +49,18 @@ async def authenticate_user(user_type: str, request: AuthRequest):
             if not is_old_user:
                 user_doc_ref = db_user.document(user_id)
                 user_data = {
-                    "uid": user_id,
-                    "name": user_record.display_name or "Apple User",
-                    "email": user_email,
-                    "profile_url": user_record.photo_url
-                    or "https://avatar.iran.liara.run/public",
-                    "fcm_tokens": fcm_tokens,
-                    "timezone": request.device_data.timezone or "Asia/Kolkata",
+                    cast(
+                        User,
+                        {
+                            "user_id": user_id,
+                            "user_email": user_email,
+                            "user_name": user_record.display_name or "Apple User",
+                            "fcm_tokens": fcm_tokens,
+                            "timezone": request.device_data.timezone or "Asia/Kolkata",
+                            "profile_url": user_record.photo_url
+                            or "https://avatar.iran.liara.run/public",
+                        },
+                    )
                 }
 
                 user_doc_ref.set(user_data)
@@ -78,13 +85,20 @@ async def authenticate_user(user_type: str, request: AuthRequest):
             if not is_old_teacher:
                 teacher_doc_ref = db_teacher.document(user_id)
                 teacher_data = {
-                    "uid": user_id,
-                    "name": user_record.display_name or "Apple User",
-                    "email": user_email,
-                    "profile_url": user_record.photo_url
-                    or "https://avatar.iran.liara.run/public",
-                    "fcm_tokens": fcm_tokens,
-                    "timezone": request.device_data.timezone or "Asia/Kolkata",
+                    cast(
+                        Teacher,
+                        {
+                            "user_id": user_id,
+                            "user_email": user_email,
+                            "user_name": user_record.display_name or "Apple User",
+                            "fcm_tokens": fcm_tokens,
+                            "timezone": request.device_data.timezone or "Asia/Kolkata",
+                            "profile_url": user_record.photo_url
+                            or "https://avatar.iran.liara.run/public",
+                            "access_token": "",
+                            "refresh_token": "",
+                        },
+                    )
                 }
 
                 teacher_doc_ref.set(teacher_data)
