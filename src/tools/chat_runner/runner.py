@@ -1,18 +1,28 @@
 import json
-from typing import cast, Any
+from typing import cast, Any, Literal, Optional
 from src import get_logger
-from src.models.chat.chatstate import ChatState
+from src.model.chat.state import ChatState
 
 logger = get_logger(__name__)
 
 
-async def run_graph(user_input: str, user_id: str):
+async def run_graph(
+    query: str,
+    user_id: str,
+    user_type: Literal["user", "teacher"],
+    lecture_id: Optional[str] = None,
+):
     from main import chat_graph
 
     state = cast(
         ChatState,
         {
-            "user_input": user_input,
+            "user_id": user_id,
+            "query": query,
+            "user_type": user_type,
+            "lecture_id": lecture_id,
+            "yt_scraped_data": None,
+            "search_results": None,
             "response": "",
         },
     )

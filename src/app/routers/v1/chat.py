@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from src.core.utility.logging_utils import get_logger
-from src.tools.chat_bot_runner.runner import run_graph
+from src.tools.chat_runner.runner import run_graph
 from src.services.auth.verify_token import verify_token
 
 logger = get_logger(__name__)

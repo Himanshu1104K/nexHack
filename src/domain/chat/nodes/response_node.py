@@ -6,7 +6,7 @@ from langgraph.graph import END
 from langgraph.types import Command
 
 
-async def response(state: ChatState):
+async def response_node(state: ChatState):
     """
     Response node for the chat bot.
     """
