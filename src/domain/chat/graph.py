@@ -30,5 +30,6 @@ async def get_chat_graph():
             "teacher_node": "teacher_node",
         },
     )
+    compiled_graph = graph.compile()
 
-    return graph
+    return compiled_graph
