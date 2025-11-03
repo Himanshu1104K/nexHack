@@ -1,7 +1,9 @@
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from src.core.utility.logging_utils import get_logger
 from src.tools.chat_bot_runner.runner import run_graph
+from src.services.auth.verify_token import verify_token
 
 logger = get_logger(__name__)
 
@@ -9,7 +11,11 @@ router = APIRouter(tags=["Chat"])
 
 
 @router.post("/chat")
-async def chat(user_input: str, user_id: str):
+async def chat(
+    query: str,
+    lecture_id: Optional[str] = None,
+    token_data: dict = Depends(verify_token),
+):
     """Chat with the chat bot"""
     try:
         return StreamingResponse(
