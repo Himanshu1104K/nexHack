@@ -1,10 +1,12 @@
 from datetime import datetime
 import uuid
+from src.core.configs import QDRANT_HOST, QDRANT_API_KEY, TEACHER_COLLECTION_NAME
 from src.model.qdrant.course import Course
 from src.model.qdrant.lecture import Lecture
 from src.core.utility.logging_utils import get_logger
 from fastapi import HTTPException
 from langchain_core.documents import Document
+from qdrant_client import QdrantClient
 
 logger = get_logger(__name__)
 
@@ -80,4 +82,23 @@ async def add_lecture_to_qdrant(
         logger.error(f"Error adding lecture to qdrant: {e}")
         raise HTTPException(
             status_code=500, detail=f"Error adding lecture to qdrant: {e}"
+        )
+
+
+async def get_courses_from_qdrant():
+    """Get all courses from qdrant"""
+    from main import teacher_store
+
+    try:
+        client = QdrantClient(
+            url=QDRANT_HOST,
+            api_key=QDRANT_API_KEY,
+        )
+        collection = client.get_collection(TEACHER_COLLECTION_NAME)
+        courses = collection.scroll()
+        return courses
+    except Exception as e:
+        logger.error(f"Error getting courses from qdrant: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error getting courses from qdrant: {e}"
         )

@@ -5,6 +5,7 @@ from src.services.auth.verify_token import verify_token
 from src.services.qdrant.course import add_course_to_qdrant
 from src.models.desc_agent.descstate import DESCSTATE
 from src.services.qdrant.course import add_lecture_to_qdrant
+from src.services.qdrant.course import get_courses_from_qdrant
 
 logger = get_logger(__name__)
 
@@ -82,4 +83,15 @@ async def create_lecture(
     return {
         "message": "Lecture created successfully",
         "lecture_id": lecture_id,
+    }
+
+
+@router.get("/get-courses")
+async def get_courses(token_data: dict = Depends(verify_token)):
+    """Get all courses"""
+
+    courses = await get_courses_from_qdrant()
+    return {
+        "message": "Courses fetched successfully",
+        "courses": courses or [],
     }

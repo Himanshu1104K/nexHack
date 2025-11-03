@@ -1,14 +1,20 @@
-from ctypes import cast
 from datetime import datetime, timedelta
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel, Field
+from typing import Optional, Dict
+import requests
 from firebase_admin import auth
 from src.core.configs import (
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES,
+    GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET,
+    GOOGLE_REDIRECT_URI,
 )
 from src.core.utility.logging_utils import get_logger
 from src.model.routes.auth_models import AuthRequest, AuthResponse
+from src.services.auth.verify_token import verify_token
 from src.services.auth.create_jwt import create_jwt_token
-from src.model.firestore.state import User, Teacher
 
 logger = get_logger(__name__)
 
@@ -130,3 +136,84 @@ async def authenticate_user(user_type: str, request: AuthRequest):
         raise HTTPException(
             status_code=500, detail=f"Database operation failed: {str(e)}"
         )
+
+
+class TokenRequest(BaseModel):
+    """Request body for setting user token."""
+
+    code: str = Field(..., description="Authorization code from Google OAuth")
+    platform: Optional[str] = Field(None, description="Platform name")
+
+
+@router.post("/user/token")
+async def set_token(data: TokenRequest, token_data: dict = Depends(verify_token)):
+    """Set user token"""
+    code = data.code
+    user_id = token_data.get("sub")
+
+    if not code or not user_id:
+        raise HTTPException(status_code=400, detail="Missing code or user_id")
+
+    # Exchange code for tokens
+    token_url = "https://oauth2.googleapis.com/token"
+    payload = {
+        "code": code,
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "redirect_uri": GOOGLE_REDIRECT_URI if data.platform else "postmessage",
+        "grant_type": "authorization_code",
+    }
+    try:
+        token_response = requests.post(token_url, data=payload)
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Token exchange request failed: {str(e)}"
+        )
+
+    if token_response.status_code != 200:
+        raise HTTPException(
+            status_code=400,
+            detail={
+                "error": "Failed to exchange code",
+                "details": token_response.text,
+            },
+        )
+
+    try:
+        tokens = token_response.json()
+        access_token = tokens.get("access_token")
+        refresh_token = tokens.get("refresh_token")
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to parse token response: {str(e)}"
+        )
+
+    try:
+        from main import db_teacher
+
+        teacher_doc_ref = db_teacher.document(user_id)
+        teacher_doc = teacher_doc_ref.get()
+        teacher_data = teacher_doc.to_dict()
+        teacher_data["access_token"] = access_token
+        teacher_data["refresh_token"] = refresh_token
+        teacher_doc_ref.set(teacher_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update user: {str(e)}")
+    return JSONResponse(content={"message": "Token set successfully"})
+
+
+@router.post("/user/reset/token")
+async def reset_token(token_data: dict = Depends(verify_token)):
+    try:
+        from main import db_teacher
+
+        user_id = token_data.get("sub")
+        teacher_doc_ref = db_teacher.document(user_id)
+        teacher_doc = teacher_doc_ref.get()
+        teacher_data = teacher_doc.to_dict()
+        teacher_data["access_token"] = ""
+        teacher_data["refresh_token"] = ""
+        teacher_doc_ref.set(teacher_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to update user: {str(e)}")
+    return JSONResponse(content={"message": "Token reset successfully"})
