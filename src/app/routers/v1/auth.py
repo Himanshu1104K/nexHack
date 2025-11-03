@@ -217,3 +217,60 @@ async def reset_token(token_data: dict = Depends(verify_token)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to update user: {str(e)}")
     return JSONResponse(content={"message": "Token reset successfully"})
+
+
+@router.get("/user/token/validate")
+async def validate_token(token_data: Dict = Depends(verify_token)):
+    user_id = token_data["sub"]
+
+    from main import db_teacher
+
+    teacher_doc_ref = db_teacher.document(user_id)
+    teacher_doc = teacher_doc_ref.get()
+    teacher_data = teacher_doc.to_dict()
+
+    access_token = teacher_data.get("access_token")
+    refresh_token = teacher_data.get("refresh_token")
+
+    if not access_token or not refresh_token:
+        return {"status": "error", "isValid": False, "message": "No tokens found"}
+
+    # Validate the refresh token by attempting to use it
+    is_refresh_token_valid = await validate_refresh_token(refresh_token)
+
+    if not is_refresh_token_valid:
+        return {
+            "status": "error",
+            "isValid": False,
+            "message": "Refresh token is invalid or expired",
+        }
+
+    return {"status": "success", "isValid": True, "message": "Tokens are valid"}
+
+
+async def validate_refresh_token(refresh_token: str) -> bool:
+    """
+    Validate refresh token by attempting to exchange it for a new access token.
+    Returns True if the refresh token is valid, False otherwise.
+    """
+    if not refresh_token:
+        return False
+
+    token_url = "https://oauth2.googleapis.com/token"
+    payload = {
+        "client_id": GOOGLE_CLIENT_ID,
+        "client_secret": GOOGLE_CLIENT_SECRET,
+        "refresh_token": refresh_token,
+        "grant_type": "refresh_token",
+    }
+
+    try:
+        response = requests.post(token_url, data=payload)
+        response.raise_for_status()
+
+        # If we get a successful response, the refresh token is valid
+        return True
+
+    except requests.exceptions.RequestException as e:
+        # If we get an error (like invalid_grant), the refresh token is invalid
+        return False
