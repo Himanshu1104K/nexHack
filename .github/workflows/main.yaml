@@ -1,0 +1,31 @@
+name: nexhub-backend-workflow
+
+on:
+  push:
+    branches:
+      - "main"
+
+jobs:
+  CI-CD:
+    runs-on: self-hosted
+    steps:
+      - name: update system
+        run: sudo apt update
+
+      - name: Code-Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Docker
+        working-directory: .
+        run: docker compose build
+
+      - name: Remove Docker Container -
+        working-directory: .
+        run: docker compose down || true
+
+      - name: Docker Run
+        working-directory: .
+        run: docker compose up -d
+
+      - name: Docker Clean
+        run: docker system prune -af

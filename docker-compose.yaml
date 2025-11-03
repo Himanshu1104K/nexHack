@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  backend:
+    container_name: nexhack-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+volumes:
+  redis-data:
