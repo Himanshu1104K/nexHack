@@ -13,11 +13,11 @@ db_user = None
 db_teacher = None
 teacher_store = None
 user_store = None
-
+chat_graph = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    global db_user, db_teacher, teacher_store, user_store
+    global db_user, db_teacher, teacher_store, user_store,chat_graph
 
     try:
         try:
@@ -33,6 +33,8 @@ async def lifespan(app: FastAPI):
 
         teacher_store = await setup_teacher_store()
         user_store = await setup_user_store()
+
+        chat_graph = await get_chat_graph()
 
         yield
     except Exception as e:
