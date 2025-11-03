@@ -47,27 +47,28 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_user:
-                user_doc_ref = db_user.document(user_id)
-                user_data = {
-                    cast(
-                        User,
-                        {
-                            "user_id": user_id,
-                            "user_email": user_email,
-                            "user_name": user_record.display_name or "Apple User",
-                            "fcm_tokens": fcm_tokens,
-                            "timezone": request.device_data.timezone or "Asia/Kolkata",
-                            "profile_url": user_record.photo_url
-                            or "https://avatar.iran.liara.run/public",
-                        },
-                    )
-                }
+                user_data = cast(
+                    User,
+                    {
+                        "user_id": user_id,
+                        "user_email": user_email,
+                        "user_name": user_record.display_name or "Apple User",
+                        "fcm_tokens": fcm_tokens,
+                        "timezone": request.device_data.timezone or "Asia/Kolkata",
+                        "profile_url": user_record.photo_url
+                        or "https://avatar.iran.liara.run/public",
+                    },
+                )
 
                 user_doc_ref.set(user_data)
 
             else:
                 user_data = user_doc.to_dict()
-                user_data["fcm_tokens"].concat(fcm_tokens)
+                user_data["fcm_tokens"].extend(
+                    token
+                    for token in fcm_tokens
+                    if token not in user_data["fcm_tokens"]
+                )
                 user_doc_ref.set(user_data)
 
         elif user_type == "teacher":
@@ -83,29 +84,30 @@ async def authenticate_user(user_type: str, request: AuthRequest):
                 fcm_tokens.append(request.device_data.fcm_token)
 
             if not is_old_teacher:
-                teacher_doc_ref = db_teacher.document(user_id)
-                teacher_data = {
-                    cast(
-                        Teacher,
-                        {
-                            "user_id": user_id,
-                            "user_email": user_email,
-                            "user_name": user_record.display_name or "Apple User",
-                            "fcm_tokens": fcm_tokens,
-                            "timezone": request.device_data.timezone or "Asia/Kolkata",
-                            "profile_url": user_record.photo_url
-                            or "https://avatar.iran.liara.run/public",
-                            "access_token": "",
-                            "refresh_token": "",
-                        },
-                    )
-                }
+                teacher_data = cast(
+                    Teacher,
+                    {
+                        "user_id": user_id,
+                        "user_email": user_email,
+                        "user_name": user_record.display_name or "Apple User",
+                        "fcm_tokens": fcm_tokens,
+                        "timezone": request.device_data.timezone or "Asia/Kolkata",
+                        "profile_url": user_record.photo_url
+                        or "https://avatar.iran.liara.run/public",
+                        "access_token": "",
+                        "refresh_token": "",
+                    },
+                )
 
                 teacher_doc_ref.set(teacher_data)
 
             else:
                 teacher_data = teacher_doc.to_dict()
-                teacher_data["fcm_tokens"].concat(fcm_tokens)
+                teacher_data["fcm_tokens"].extend(
+                    token
+                    for token in fcm_tokens
+                    if token not in teacher_data["fcm_tokens"]
+                )
                 teacher_doc_ref.set(teacher_data)
 
         token_data = {
