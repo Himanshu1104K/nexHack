@@ -5,6 +5,7 @@ from src import *
 from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, firestore
+from fastapi.middleware.cors import CORSMiddleware
 
 load_dotenv()
 
@@ -52,6 +53,14 @@ app = FastAPI(
     description="API for NexHack which acts as a mediator",
     version="1.0.0",
     lifespan=lifespan,
+    middleware=[
+        CORSMiddleware(
+            allow_origins=["*"],
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+    ],
 )
 
 for router in [auth.router]:
