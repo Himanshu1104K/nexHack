@@ -27,6 +27,7 @@ async def run_graph(
             "search_results": None,
             "response": "",
             "need_quiz": False,
+            "course_data": None,
         },
     )
 

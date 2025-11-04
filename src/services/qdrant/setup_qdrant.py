@@ -55,6 +55,7 @@ async def setup_user_store():
 
     return vectorstore
 
+
 async def setup_lecture_store():
     """Initialize and return the lecture vector store"""
     # Create collection if it doesn't exist

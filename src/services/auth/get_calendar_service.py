@@ -91,9 +91,7 @@ async def update_user_tokens(user_id: str) -> None:
     from google.api_core.exceptions import NotFound
 
     try:
-        db_teacher.document(user_id).update(
-            {"access_token": "", "refresh_token": ""}
-        )
+        db_teacher.document(user_id).update({"access_token": "", "refresh_token": ""})
         logger.info(f"Purged stale tokens for user {user_id}")
     except NotFound:
         logger.warning(

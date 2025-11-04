@@ -12,7 +12,7 @@ async def course_scrapper_node(state: ChatState):
     Calendar node for the chat bot.
     """
     llm = ChatOpenAI(
-        model="gpt-5-nano",
+        model="gpt-4o",
         streaming=False,
     )
 
