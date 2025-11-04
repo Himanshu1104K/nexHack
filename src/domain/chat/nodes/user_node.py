@@ -1,6 +1,5 @@
 from langchain_openai import ChatOpenAI
 from src.model.chat.state import ChatState
-from langgraph.graph import END
 from langgraph.types import Command
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
@@ -16,8 +15,7 @@ async def user_node(state: ChatState):
 
     llm = ChatOpenAI(
         model="gpt-4o-mini",
-        temperature=0.1,
-        streaming=True,
+        streaming=False,
     )
 
     prompt = ChatPromptTemplate.from_messages(

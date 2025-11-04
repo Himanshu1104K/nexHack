@@ -51,6 +51,19 @@ async def run_graph(
 
                 yield f"data: {json_data}\n\n"
 
+            elif (
+                event_type == "on_chat_model_stream"
+                and event.get("metadata").get("langgraph_node") == "quiz_node"
+            ):
+                json_data = json.dumps(
+                    {
+                        "type": "quiz",
+                        "content": f"{event.get('data').get('chunk').content}",
+                    }
+                )
+
+                yield f"data: {json_data}\n\n"
+
             else:
                 continue
     except Exception as e:
