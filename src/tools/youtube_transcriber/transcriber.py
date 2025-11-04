@@ -80,7 +80,7 @@ def download_captions_srt(
         return None
 
 
-async def get_transcript(video_url: str, language_code: Optional[str] = None):
+async def get_transcript(video_url: str, language_code: Optional[str] = "en"):
     """
     Get transcript from YouTube video using captions only.
     """
@@ -100,7 +100,7 @@ async def get_transcript(video_url: str, language_code: Optional[str] = None):
     with open(caption_file, "r", encoding="utf-8") as f:
         transcript_text = f.read()
 
-    return transcript_text  
+    return transcript_text
 
 
 __all__ = ["get_transcript"]

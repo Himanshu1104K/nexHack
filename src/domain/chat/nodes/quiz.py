@@ -37,7 +37,7 @@ async def quiz_node(state: ChatState) -> Command:
                 "user",
                 """
                 Query: {query}
-                Course data: {course_data}
+                Course data: {yt_scraped_data}
                 """,
             ),
         ]
@@ -46,7 +46,7 @@ async def quiz_node(state: ChatState) -> Command:
     response = await chain.ainvoke(
         {
             "query": state["query"],
-            "course_data": state["course_data"],
+            "yt_scraped_data": state["yt_scraped_data"],
         }
     )
 

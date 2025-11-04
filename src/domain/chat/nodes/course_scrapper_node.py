@@ -49,7 +49,7 @@ async def course_scrapper_node(state: ChatState):
             ),
             (
                 "user",
-                "Youtube Video Context : {youtube_video_context}\nUser Query: {query}",
+                "Youtube Video Context : {youtube_video_context}\nUser Query: {query} # Give Priority to the User Query for the verification of the quiz.",
             ),
         ]
     )
