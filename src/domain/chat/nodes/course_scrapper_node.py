@@ -1,10 +1,10 @@
 from langchain_core.output_parsers import StrOutputParser
 from src.model.chat.state import ChatState
-from langgraph.graph import END
 from langgraph.types import Command
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from src.services.qdrant.course import get_youtube_url
+from src.tools.youtube_transcriber.transcriber import get_transcript
 
 
 async def course_scrapper_node(state: ChatState):
@@ -17,18 +17,27 @@ async def course_scrapper_node(state: ChatState):
     )
 
     youtube_url = await get_youtube_url(state["lecture_id"])
+    youtube_video_context = await get_transcript(youtube_url)
 
     prompt = ChatPromptTemplate.from_messages(
         [
             (
                 "system",
-                "You are a helpful assistant that can extract the YouTube URL from the given text.",
+                "You are a context retrieval assistant that can retrieve the context of a given lecture based on the youtube url and user query.",
             ),
-            ("user", "Text: {text}"),
+            (
+                "user",
+                "Youtube Video Context : {youtube_video_context}\nUser Query: {query}",
+            ),
         ]
     )
     chain = prompt | llm | StrOutputParser()
-    context = await chain.ainvoke({"text": youtube_url})
+    context = await chain.ainvoke(
+        {
+            "youtube_video_context": youtube_video_context,
+            "query": state["query"],
+        }
+    )
 
     state["yt_scraped_data"] = context
 
