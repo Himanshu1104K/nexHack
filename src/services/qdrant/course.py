@@ -1,5 +1,7 @@
 from datetime import datetime
 import uuid
+
+from qdrant_client import models
 from src.core.configs import QDRANT_HOST, QDRANT_API_KEY, TEACHER_COLLECTION_NAME
 from src.model.qdrant.course import Course
 from src.model.qdrant.lecture import Lecture
@@ -101,4 +103,31 @@ async def get_courses_from_qdrant():
         logger.error(f"Error getting courses from qdrant: {e}")
         raise HTTPException(
             status_code=500, detail=f"Error getting courses from qdrant: {e}"
+        )
+
+
+async def get_youtube_url(lecture_id: str):
+    """Get the YouTube URL from the lecture id"""
+    from main import lecture_store
+
+    try:
+        qdrant_filter = models.Filter(
+            must=[
+                models.FieldCondition(
+                    key="metadata.lecture_id",
+                    match=models.MatchValue(value=lecture_id),
+                )
+            ]
+        )
+        result = await lecture_store.asimilarity_search(
+            query_text="",
+            query_filter=qdrant_filter,
+            limit=1,
+        )
+        print(result)
+        return result[0].metadata.video_url
+    except Exception as e:
+        logger.error(f"Error getting YouTube URL from lecture id: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error getting YouTube URL from lecture id: {e}"
         )

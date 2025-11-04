@@ -14,3 +14,4 @@ class ChatState(TypedDict):
         Optional[list[dict]], "Search results"
     ]
     course_data: Optional[dict] = Annotated[Optional[dict], "Course data"]
+    need_quiz: Optional[bool] = Annotated[Optional[bool], "Need quiz"]
