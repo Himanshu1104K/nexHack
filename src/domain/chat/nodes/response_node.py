@@ -39,13 +39,13 @@ async def response_node(state: ChatState):
         """
         inputs["yt_scraped_data"] = state["yt_scraped_data"]
 
-    if state["course_data"] is not None:
-        system_prompt += """
-        This is the course data for the user's query: {course_data}
-        Use this information to answer the user's query.
-        If the user's query is not related to the course, say that you are not sure about the answer.
-        """
-        inputs["course_data"] = state["course_data"]
+    # if state["course_data"] is not None:
+    #     system_prompt += """
+    #     This is the course data for the user's query: {course_data}
+    #     Use this information to answer the user's query.
+    #     If the user's query is not related to the course, say that you are not sure about the answer.
+    #     """
+    #     inputs["course_data"] = state["course_data"]
 
     prompt = ChatPromptTemplate.from_messages(
         [
