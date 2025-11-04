@@ -13,64 +13,50 @@ async def response_node(state: ChatState):
     """
     llm = ChatOpenAI(
         model="gpt-4o",
-        temperature=0.7,
         streaming=True,
     )
 
-    # # Build context sections based on available data
-    # context_parts = []
+    system_prompt = """
+    You are Vellora, a placement assistant coach and a personal helping assistant.
+    """
 
-    # if state.get("yt_scraped_data") and state["yt_scraped_data"] not in [None, {}]:
-    #     context_parts.append(
-    #         "## YouTube Scraped Data\n" + json.dumps(state["yt_scraped_data"], indent=2)
-    #     )
+    inputs = {
+        "query": state["query"],
+    }
+    if state["search_results"] is not None:
+        system_prompt += """
+        This are the search results for the user's query: {search_results}
+        Use this information to answer the user's query.
+        If the user's query is not related to the search results, say that you are not sure about the answer.
+        """
+        inputs["search_results"] = state["search_results"]
 
-    # if state.get("search_results") and state["search_results"] not in [None, []]:
-    #     context_parts.append(
-    #         "## Search Results\n" + json.dumps(state["search_results"], indent=2)
-    #     )
+    if state["yt_scraped_data"] is not None:
+        system_prompt += """
+        This is the context of the lecture that the user is interested in: {yt_scraped_data}
+        Use this information to answer the user's query.
+        If the user's query is not related to the lecture, say that you are not sure about the answer.
+        """
+        inputs["yt_scraped_data"] = state["yt_scraped_data"]
 
-    # context_section = (
-    #     "\n\n".join(context_parts)
-    #     if context_parts
-    #     else "No additional context provided."
-    # )
-
-    # system_prompt = """You are a helpful assistant that provides responses based on the given query and available context data.
-    #     Your response should be formatted in markdown.
-    #     Use the provided context data (YouTube scraped data and/or search results) to enhance your answer when available.
-    #     If context data is provided, reference it appropriately in your response.
-    #     Format your response using markdown syntax for better readability.
-    # """
-
-    # user_prompt = """Query: {query}
-
-    #         {context}
-
-    #         Please provide a comprehensive response to the query based on the information above. Format your response in markdown."""
-
-    # prompt = ChatPromptTemplate.from_messages(
-    #     [
-    #         ("system", system_prompt),
-    #         ("user", user_prompt),
-    #     ]
-    # )
+    if state["course_data"] is not None:
+        system_prompt += """
+        This is the course data for the user's query: {course_data}
+        Use this information to answer the user's query.
+        If the user's query is not related to the course, say that you are not sure about the answer.
+        """
+        inputs["course_data"] = state["course_data"]
 
     prompt = ChatPromptTemplate.from_messages(
         [
-            (
-                "system",
-                "You are Vellora, a placement assistant coach. You help students get placed and are also an expert in competitive programming and DSA. If anyone asks who you are, mention that you are a placement coach, interview coach, and very good in DSA and competitive programming.",
-            ),
-            ("user", "Query: {query}"),
+            ("system", system_prompt),
+            ("user", "{query}"),
         ]
     )
     chain = prompt | llm | StrOutputParser()
 
     response = await chain.ainvoke(
-        {
-            "query": state["query"],
-        }
+        inputs,
     )
     state["response"] = response
     return Command(goto=END, update=state)

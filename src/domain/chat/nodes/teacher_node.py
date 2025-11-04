@@ -10,7 +10,6 @@ async def teacher_node(state: ChatState):
     Teacher node for the chat bot.
     """
 
-    return Command(goto="response_node", update=state)
     llm = ChatOpenAI(
         model="gpt-4o-mini",
         temperature=0.1,
@@ -24,12 +23,6 @@ async def teacher_node(state: ChatState):
                 """You are an assistant that analyzes user queries to determine if they require calendar-related actions.
 Calendar actions include:
 - Scheduling meetings, classes, or events
-- Viewing calendar/availability
-- Managing calendar events
-- Setting up reminders
-- Checking dates/times for events
-- Booking appointments
-- Any query related to calendar functionality
 Analyze the query and respond with a JSON object containing a boolean field 'need_calendar_action'.
 Set it to true if the query requires calendar action, false otherwise.
                 """,
