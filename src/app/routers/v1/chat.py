@@ -4,17 +4,22 @@ from fastapi.responses import StreamingResponse
 from src.core.utility.logging_utils import get_logger
 from src.tools.chat_runner.runner import run_graph
 from src.services.auth.verify_token import verify_token
+from pydantic import BaseModel
 
 logger = get_logger(__name__)
 
 router = APIRouter(tags=["Chat"])
 
 
+class ChatRequest(BaseModel):
+    query: str
+    video_url: Optional[str] = None
+    lecture_id: Optional[str] = None
+
+
 @router.post("/chat")
 async def chat(
-    query: str,
-    video_url: Optional[str] = None,
-    lecture_id: Optional[str] = None,
+    chat_request: ChatRequest,
     token_data: dict = Depends(verify_token),
 ):
     """Chat with the chat bot"""
@@ -24,9 +29,9 @@ async def chat(
         return StreamingResponse(
             run_graph(
                 user_id=user_id,
-                query=query,
-                lecture_id=lecture_id,
-                video_url=video_url,
+                query=chat_request.query,
+                lecture_id=chat_request.lecture_id,
+                video_url=chat_request.video_url,
                 user_type=user_type,
             ),
             media_type="text/event-stream",
