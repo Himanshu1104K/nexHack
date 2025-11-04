@@ -9,6 +9,7 @@ class ChatState(TypedDict):
         Literal["user", "teacher"], "User type"
     ]
     lecture_id: Optional[str] = Annotated[Optional[str], "Lecture ID"]
+    video_url: Optional[str] = Annotated[Optional[str], "YouTube video URL"]
     yt_scraped_data: Optional[dict] = Annotated[Optional[dict], "YouTube scraped data"]
     search_results: Optional[list[dict]] = Annotated[
         Optional[list[dict]], "Search results"
