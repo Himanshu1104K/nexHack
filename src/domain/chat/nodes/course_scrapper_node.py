@@ -24,7 +24,9 @@ async def course_scrapper_node(state: ChatState):
         return Command(goto="response_node", update=state)
 
     try:
-        youtube_video_context = await get_transcript(youtube_url)
+        youtube_video_context = await get_transcript(
+            "https://youtu.be/" + str(youtube_url)
+        )
     except Exception as e:
         # Log and fallback to default flow without context
         from src import get_logger
