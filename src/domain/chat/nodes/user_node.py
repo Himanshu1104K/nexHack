@@ -10,7 +10,7 @@ async def user_node(state: ChatState):
     User node for the chat bot.
     """
 
-    if state["lecture_id"]:
+    if state["lecture_id"] or state["video_url"]:
         return Command(goto="course_scrapper_node", update=state)
 
     llm = ChatOpenAI(

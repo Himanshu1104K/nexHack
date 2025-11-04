@@ -13,6 +13,7 @@ router = APIRouter(tags=["Chat"])
 @router.post("/chat")
 async def chat(
     query: str,
+    video_url: Optional[str] = None,
     lecture_id: Optional[str] = None,
     token_data: dict = Depends(verify_token),
 ):
@@ -25,6 +26,7 @@ async def chat(
                 user_id=user_id,
                 query=query,
                 lecture_id=lecture_id,
+                video_url=video_url,
                 user_type=user_type,
             ),
             media_type="text/event-stream",

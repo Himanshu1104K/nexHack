@@ -11,6 +11,7 @@ async def run_graph(
     user_id: str,
     user_type: Literal["user", "teacher"],
     lecture_id: Optional[str] = None,
+    video_url: Optional[str] = None,
 ):
     from main import chat_graph
 
@@ -21,6 +22,7 @@ async def run_graph(
             "query": query,
             "user_type": user_type,
             "lecture_id": lecture_id,
+            "video_url": video_url,
             "yt_scraped_data": None,
             "search_results": None,
             "response": "",

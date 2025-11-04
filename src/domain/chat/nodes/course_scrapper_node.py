@@ -16,7 +16,13 @@ async def course_scrapper_node(state: ChatState):
         streaming=False,
     )
 
-    youtube_url = await get_youtube_url(state["lecture_id"])
+    if state["lecture_id"]:
+        youtube_url = await get_youtube_url(state["lecture_id"])
+    elif state["video_url"]:
+        youtube_url = state["video_url"]
+    else:
+        return Command(goto="response_node", update=state)
+
     youtube_video_context = await get_transcript(youtube_url)
 
     prompt = ChatPromptTemplate.from_messages(
