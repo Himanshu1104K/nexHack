@@ -23,7 +23,18 @@ async def course_scrapper_node(state: ChatState):
     else:
         return Command(goto="response_node", update=state)
 
-    youtube_video_context = await get_transcript(youtube_url)
+    try:
+        youtube_video_context = await get_transcript(youtube_url)
+    except Exception as e:
+        # Log and fallback to default flow without context
+        from src import get_logger
+
+        logger = get_logger(__name__)
+        logger.error(f"Failed to fetch captions: {e}")
+
+        state["yt_scraped_data"] = None
+        # Continue without video context → normal response node
+        return Command(goto="response_node", update=state)
 
     prompt = ChatPromptTemplate.from_messages(
         [
