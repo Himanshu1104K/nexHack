@@ -1,4 +1,4 @@
-from langchain_core.output_parsers import StrOutputParser
+from langchain_core.output_parsers import JsonOutputParser
 from src.model.chat.state import ChatState
 from langgraph.types import Command
 from langchain_openai import ChatOpenAI
@@ -23,7 +23,12 @@ async def course_scrapper_node(state: ChatState):
         [
             (
                 "system",
-                "You are a context retrieval assistant that can retrieve the context of a given lecture based on the youtube url and user query.",
+                """You are a context retrieval assistant that can retrieve the context of a given lecture based on the youtube url and user query. You will be returning a json Object with the following fields: 
+                {{
+                    "context": "The context of the lecture",
+                    "need_quiz": "True if the user wants to take a quiz on the lecture, False otherwise"
+                }}
+                """,
             ),
             (
                 "user",
@@ -31,7 +36,7 @@ async def course_scrapper_node(state: ChatState):
             ),
         ]
     )
-    chain = prompt | llm | StrOutputParser()
+    chain = prompt | llm | JsonOutputParser()
     context = await chain.ainvoke(
         {
             "youtube_video_context": youtube_video_context,
@@ -39,7 +44,8 @@ async def course_scrapper_node(state: ChatState):
         }
     )
 
-    state["yt_scraped_data"] = context
+    state["yt_scraped_data"] = context.get("context")
+    state["need_quiz"] = context.get("need_quiz")
 
     if state["need_quiz"]:
         return Command(goto="quiz_node", update=state)

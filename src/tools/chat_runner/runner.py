@@ -24,6 +24,7 @@ async def run_graph(
             "yt_scraped_data": None,
             "search_results": None,
             "response": "",
+            "need_quiz": False,
         },
     )
 

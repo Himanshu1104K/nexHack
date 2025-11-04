@@ -21,6 +21,8 @@ async def get_chat_graph():
     graph.add_node("course_scrapper_node", course_scrapper_node)
     graph.add_node("calendar_node", calendar_node)
     graph.add_node("response_node", response_node)
+    graph.add_node("quiz_node", quiz_node)
+    graph.add_node("course_planner_node", course_planner_node)
 
     graph.add_conditional_edges(
         START,
